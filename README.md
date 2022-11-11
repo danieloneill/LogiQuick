@@ -11,9 +11,9 @@ Rendering is done in an offscreen FBO and is fairly efficient.
 
 Keypad events are translated into key press/release events. These events are exposed to the QML via Qt signals and can be used to change options, switch QML scenes, or whatever.
 
-[Video demonstration](https://imgur.com/9lEaqJg)
+[Video demonstration](https://user-images.githubusercontent.com/10540429/201258787-c9d783c8-7da7-4f69-8c40-db2051c3940e.webm)
 
-[Another video demonstration](https://imgur.com/ewIb7jS)
+[Another video demonstration](https://user-images.githubusercontent.com/10540429/201258797-1b7c6b48-19aa-4a91-ab60-d14deebd1926.webm)
 
 ## Windows
 
