@@ -1,13 +1,13 @@
 # LogiQuick
 Qt Quick/QML interface for Logitech G19S keyboards
 
-This renders a Qt Quick scene from a QML file and displays it on a connected Logitech G19 or G19S keyboard LCD.
+This renders a Qt Quick scene from a QML file and displays it on a connected Logitech G19 or G19S keyboard LCD via the Logitech G19(s) software.
 
 Keypad events are translated into key press/release events.
 
 Rendering is done in an offscreen FBO and is fairly efficient.
 
-At the moment only Windows 10 has been tested. For Linux/BSD or other, the Logitech API sections would need to be modified for that platform.
+At the moment only Windows 10 will work with this version. For Linux/BSD or other, see the [g19daemon branch](https://github.com/danieloneill/LogiQuick/tree/g19daemon) which provides a direct interface to the keyboard.
 
 ## Building
 
