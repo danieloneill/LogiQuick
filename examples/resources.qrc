@@ -11,7 +11,7 @@
         <file>twitch.js</file>
         <file>TwitchLogin.qml</file>
         <file>ToonLabel.qml</file>
-        <file>ding.wav</file>
+        <file>ding.aac</file>
         <file>qmldir</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>

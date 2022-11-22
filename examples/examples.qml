@@ -57,6 +57,7 @@ FocusScope {
             }
 
             model: [
+                { 'label':'OwnCast Monitor', 'source':'examples_owncast.qml' },
                 { 'label':'Media Test', 'source':'examples_media.qml' },
                 { 'label':'Web Test', 'source':'examples_web.qml' },
                 { 'label':'Solar PV Test', 'source':'examples_solarpv.qml' },

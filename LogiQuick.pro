@@ -37,10 +37,12 @@ DISTFILES += \
     examples/MyView.qml \
     examples/examples.qml \
     examples/examples_media.qml \
+    examples/examples_owncast.qml \
     examples/examples_solarpv.qml \
     examples/examples_twitchchat.qml \
     examples/examples_web.qml \
     examples/menu.qml \
+    examples/owncast.js \
     examples/qmldir \
     examples/ToonLabel.qml \
     examples/TwitchLogin.qml \

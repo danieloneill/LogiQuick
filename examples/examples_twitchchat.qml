@@ -96,7 +96,7 @@ Rectangle {
 
     MediaPlayer { // Qt 6.x
         id: notifySound
-        source: 'ding.wav'
+        source: 'ding.aac'
     }
 
     Item {
