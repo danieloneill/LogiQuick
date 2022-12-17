@@ -1,12 +1,13 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Window 2.15
 
-import Qt5Compat.GraphicalEffects
+import QtGraphicalEffects 1.0
 
-import QtMultimedia
+import QtMultimedia 5.15
 
-import Qt.labs.settings
+import Qt.labs.settings 1.0
 
 import 'owncast.js' as OwnCast
 
@@ -102,25 +103,17 @@ Rectangle {
         id: streamPlayer
         source: `${owncastHost}/hls/${streamId.length > 0 ? streamId + '/' : ''}stream.m3u8`
         loops: MediaPlayer.Infinite
-        videoOutput: streamView
-        audioOutput: streamAudio
+        muted: true
     }
     VideoOutput {
         id: streamView
         anchors.fill: parent
-    }
-    AudioOutput {
-        id: streamAudio
-        muted: true
+        source: streamPlayer
     }
 
     MediaPlayer {
         id: notifySound
         source: 'ding.aac'
-        audioOutput: notifyAudio
-    }
-    AudioOutput {
-        id: notifyAudio
     }
 
     Text {

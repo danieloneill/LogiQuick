@@ -11,7 +11,7 @@ FocusScope {
     Material.theme: Material.Dark
 
     function loadExamples() {
-        LogiView.load(":/examples.qml");
+        LogiView.load("examples.qml");
     }
 
     Connections {

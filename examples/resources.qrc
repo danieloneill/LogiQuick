@@ -1,17 +1,18 @@
 <RCC>
     <qresource prefix="/">
         <file>icon.png</file>
+        <file>vgicon.png</file>
         <file>menu.qml</file>
         <file>examples.qml</file>
+        	<file>FPSCounter.qml</file>
         <file>examples_media.qml</file>
         <file>examples_solarpv.qml</file>
         <file>examples_web.qml</file>
-        <file>HWYGWDE.TTF</file>
-        <file>examples_twitchchat.qml</file>
-        <file>twitch.js</file>
-        <file>TwitchLogin.qml</file>
-        <file>ToonLabel.qml</file>
-        <file>ding.aac</file>
+        	<file>HWYGWDE.TTF</file>
+        <file>examples_owncast.qml</file>
+	        <file>owncast.js</file>
+        	<file>ToonLabel.qml</file>
+        	<file>ding.aac</file>
         <file>qmldir</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>

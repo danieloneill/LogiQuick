@@ -34,20 +34,17 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    examples/MyView.qml \
     examples/examples.qml \
     examples/examples_media.qml \
     examples/examples_owncast.qml \
     examples/examples_solarpv.qml \
-    examples/examples_twitchchat.qml \
     examples/examples_web.qml \
     examples/menu.qml \
     examples/owncast.js \
     examples/qmldir \
     examples/ToonLabel.qml \
-    examples/TwitchLogin.qml \
     examples/qtquickcontrols2.conf \
-    examples/twitch.js
+    examples/FPSCounter.qml
 
 RESOURCES += \
     examples/resources.qrc

@@ -6,7 +6,7 @@
 SystemTray::SystemTray(QObject *parent)
     : QSystemTrayIcon{parent}
 {
-    setIcon(QIcon(":/icon.png"));
+    setIcon(QIcon(":/vgicon.png"));
 
     QMenu *menu = new QMenu();
 

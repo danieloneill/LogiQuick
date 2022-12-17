@@ -5,7 +5,9 @@
 #include <QQuickStyle>
 #include <QSettings>
 #include <QStandardPaths>
-#include <QQuickRenderTarget>
+#if QT_VERSION >= 0x060400
+# include <QQuickRenderTarget>
+#endif
 
 QT_BEGIN_NAMESPACE
 Q_GUI_EXPORT void qt_gl_set_global_share_context(QOpenGLContext* context);
@@ -113,8 +115,11 @@ LogiView::LogiView(const QSize size, const double fps, QObject *parent)
     m_qmlEngine->rootContext()->setContextProperty("LogiView", this);
 
     m_context->makeCurrent(m_offscreenSurface);
-    // m_context should somehow bind to the quickWindow..
+#if QT_VERSION >= 0x060400
     m_renderControl->initialize();
+#else
+    m_renderControl->initialize(m_context);
+#endif
 
     connect( this, SIGNAL(stop()), this, SLOT(cleanup()) );
 
@@ -366,7 +371,6 @@ void LogiView::updateFrame()
             QImage img(m_size.width(), m_size.height(), QImage::Format_ARGB32);
             img.fill(Qt::red);
 
-            qDebug() << "Placeholder.";
             m_g19device.updateLcd(&img);
         }
 
@@ -421,7 +425,9 @@ void LogiView::grabFrame()
 
     // Polish, synchronize and render the next frame (into our fbo).
     m_renderControl->polishItems();
+#if QT_VERSION >= 0x060400
     m_renderControl->beginFrame();
+#endif
     if( !m_renderControl->sync() )
     {
         m_grabbing = false;
@@ -435,7 +441,9 @@ void LogiView::grabFrame()
     m_renderControl->render();
     m_fbo->release();
 
+#if QT_VERSION >= 0x060400
     m_renderControl->endFrame();
+#endif
 
     QImage img = m_fbo->toImage();
     m_g19device.updateLcd(&img);

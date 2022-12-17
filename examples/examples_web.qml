@@ -1,9 +1,9 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
 
-import QtCore
-import QtWebEngine
+import QtWebEngine 1.4
 
 FocusScope {
     id: topScope
@@ -42,8 +42,10 @@ FocusScope {
                 else if( key === Qt.Key_Favorites )
                 {
                     // Pause in Youtube, Netflix, etc.
-                    LogiView.postKeyPressed(Qt.Key_Space);
-                    LogiView.postKeyReleased(Qt.Key_Space);
+                    LogiView.postKeyPressed(Qt.Key_Play);
+                    LogiView.postKeyReleased(Qt.Key_Play);
+                    //LogiView.postKeyPressed(Qt.Key_Space);
+                    //LogiView.postKeyReleased(Qt.Key_Space);
                 }
                 else if( key === Qt.Key_Launch0 )
                 {
@@ -125,6 +127,7 @@ FocusScope {
                     storageName: 'LogiQuickWWW'
                     persistentCookiesPolicy: WebEngineProfile.ForcePersistentCookies
                     httpCacheType: WebEngineProfile.DiskHttpCache
+                    //httpUserAgent: "Mozilla/5.0 (Android 13; Mobile; rv:68.0) Gecko/68.0 Firefox/107.0"
                 }
                 settings {
                     localStorageEnabled: true

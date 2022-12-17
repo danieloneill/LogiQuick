@@ -48,6 +48,7 @@ var api = {
         });
 
         this.m_reconnectTimer = Qt.createQmlObject('import QtQuick 2.0; Timer { id: timer }', chatModel, 'm_reconnectTimer');
+	    console.log(`ReconnectTimer: ${this.m_reconnectTimer}`);
         this.m_reconnectTimer.interval = 10000;
         this.m_reconnectTimer.repeat = false;
         this.m_reconnectTimer.triggered.connect( function() { self.open() } );
