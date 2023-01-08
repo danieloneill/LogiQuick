@@ -10,6 +10,13 @@ CONFIG += link_pkgconfig
 
 PKGCONFIG += libusb-1.0
 
+CONFIG += post_globally
+
+post_globally {
+    DEFINES += POST_GLOBALLY=1
+    LIBS += -lX11 -lXtst
+}
+
 HEADERS += \
     src/inputwindow.h \
     src/logiview.h \

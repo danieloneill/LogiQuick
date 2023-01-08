@@ -41,19 +41,11 @@ void InputWindow::focusOutEvent(QFocusEvent *event)
 
 void InputWindow::keyPressEvent(QKeyEvent *event)
 {
-/*
-    event->accept();
-    m_logiview->postKeyPressed((Qt::Key)event->key(), event->modifiers());
-*/
     m_logiview->postEvent(event);
 }
 
 void InputWindow::keyReleaseEvent(QKeyEvent *event)
 {
-/*
-    event->accept();
-    m_logiview->postKeyReleased((Qt::Key)event->key(), event->modifiers());
-*/
     m_logiview->postEvent(event);
 }
 

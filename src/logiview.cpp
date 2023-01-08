@@ -9,6 +9,17 @@
 # include <QQuickRenderTarget>
 #endif
 
+#ifdef POST_GLOBALLY
+namespace XINPUT {
+# include <X11/keysym.h>
+# include <xkbcommon/xkbcommon-keysyms.h>
+# include <X11/extensions/XTest.h>
+}
+# undef KeyPress
+# undef KeyRelease
+# undef FocusIn
+#endif
+
 QT_BEGIN_NAMESPACE
 Q_GUI_EXPORT void qt_gl_set_global_share_context(QOpenGLContext* context);
 Q_GUI_EXPORT QOpenGLContext* qt_gl_global_share_context();
@@ -46,6 +57,40 @@ const Qt::Key QTkeys[] = {
     Qt::Key_LightBulb   // Light
 };
 
+#ifdef POST_GLOBALLY
+const unsigned long Xkeys[] = {
+    XKB_KEY_XF86Launch0,    // G1
+    XKB_KEY_XF86Launch1,    // G2
+    XKB_KEY_XF86Launch2,    // G3
+    XKB_KEY_XF86Launch3,    // G4
+    XKB_KEY_XF86Launch4,    // G5
+    XKB_KEY_XF86Launch5,    // G6
+    XKB_KEY_XF86Launch6,    // G7
+    XKB_KEY_XF86Launch7,    // G8
+    XKB_KEY_XF86Launch8,    // G9
+    XKB_KEY_XF86Launch9,    // G10
+    XKB_KEY_XF86LaunchA,    // G11
+    XKB_KEY_XF86LaunchB,    // G12
+
+    XKB_KEY_XF86LaunchC,    // M1
+    XKB_KEY_XF86LaunchD,    // M2
+    XKB_KEY_XF86LaunchE,    // M3
+    XKB_KEY_XF86LaunchF,    // MR
+
+    XKB_KEY_Select,    // Home
+    XKB_KEY_Cancel,    // Cancel
+    XKB_KEY_Menu,      // Menu
+    XKB_KEY_Execute,   // OK
+
+    XKB_KEY_F17,    // Right
+    XKB_KEY_F18,    // Left
+    XKB_KEY_F19,    // Down
+    XKB_KEY_F20,    // Up
+
+    XKB_KEY_F21,    // Light
+};
+#endif
+
 LogiView::LogiView(const QSize size, const double fps, QObject *parent)
     : QObject(parent),
       m_grabbing{false},
@@ -64,6 +109,10 @@ LogiView::LogiView(const QSize size, const double fps, QObject *parent)
       m_fps{fps},
       m_currentFrame{false}
 {
+#ifdef POST_GLOBALLY
+    m_display = XINPUT::XOpenDisplay(NULL);
+#endif
+
     m_settings = new QSettings("danieloneill", "LogiQuick", this);
 
     QStringList paths = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
@@ -141,6 +190,11 @@ LogiView::LogiView(const QSize size, const double fps, QObject *parent)
 
 LogiView::~LogiView()
 {
+#ifdef POST_GLOBALLY
+    if( m_display )
+        XINPUT::XCloseDisplay(m_display);
+#endif
+
     m_context->makeCurrent(m_offscreenSurface);
 
     cleanup();
@@ -341,6 +395,76 @@ void LogiView::postEvent(QEvent *ev)
     qApp->sendEvent(m_quickWindow, ev);
 }
 
+#ifdef POST_GLOBALLY
+void LogiView::postGlobalKeyEvent(bool press, int keycode, int modifiers) {
+    XINPUT::Window winRoot = XINPUT::XDefaultRootWindow(m_display);
+
+    XINPUT::Window winFocus;
+    int revert;
+    XINPUT::XGetInputFocus(m_display, &winFocus, &revert);
+
+    XINPUT::XKeyEvent event;
+    event.display = m_display;
+    event.window = winFocus;
+    event.root = winRoot;
+    event.subwindow = None;
+    event.time = CurrentTime;
+    event.x = 1;
+    event.y = 1;
+    event.x_root = 1;
+    event.y_root = 1;
+    event.same_screen = True;
+    event.keycode = XKeysymToKeycode(m_display, keycode);
+    event.state = modifiers;
+
+    if (press)
+        event.type = 2; // KeyPress
+    else
+        event.type = 3; // KeyRelease
+
+    XINPUT::XSelectInput(m_display, winFocus, KeyPressMask|KeyReleaseMask);
+
+    int res = XINPUT::XSendEvent(event.display, event.window, True, KeyPressMask,
+                             (XINPUT::XEvent *)&event);
+
+    qDebug() << QString("Posting %1: ").arg(press ? "PRESSED" : "RELEASED") << keycode << " => " << res;
+}
+
+void LogiView::globalKeyPressed(int keyIndex, Qt::KeyboardModifiers modifiers)
+{
+    Q_UNUSED(modifiers)
+
+    if( !m_display )
+        return;
+
+    postGlobalKeyEvent(true, Xkeys[keyIndex], 0);
+
+/*
+    unsigned int modcode = XINPUT::XKeysymToKeycode(m_display, Xkeys[keyIndex]);
+    qDebug() << "Posting PRESSED: " << modcode;
+    XINPUT::XTestFakeKeyEvent(m_display, modcode, True, 0);
+*/
+    XINPUT::XFlush(m_display);
+}
+
+void LogiView::globalKeyReleased(int keyIndex, Qt::KeyboardModifiers modifiers)
+{
+    Q_UNUSED(modifiers)
+
+    if( !m_display )
+        return;
+
+    postGlobalKeyEvent(false, Xkeys[keyIndex], 0);
+
+/*
+    unsigned int modcode = XINPUT::XKeysymToKeycode(m_display, Xkeys[keyIndex]);
+    qDebug() << "Posting RELEASED: " << modcode;
+    XINPUT::XTestFakeKeyEvent(m_display, modcode, False, 0);
+*/
+    XINPUT::XFlush(m_display);
+}
+#endif
+
 void LogiView::postKeyPressed(Qt::Key key, Qt::KeyboardModifiers modifiers)
 {
     if( !m_rootItem )
@@ -401,14 +525,16 @@ void LogiView::keyPressed()
             newPressed |= mask;
             if( !(m_pressed & mask) )
             {
-                //postKeyPressed(QTkeys[x]);
+#ifdef POST_GLOBALLY
+                globalKeyPressed(x);
+#endif
                 emit gKeyPressed(QTkeys[x]);
             }
         }
-/*
-        else if( m_pressed & logiKey )
-            postKeyReleased(QTkeys[x]);
-*/
+#ifdef POST_GLOBALLY
+        else if( m_pressed & mask )
+            globalKeyReleased(x);
+#endif
         mask <<= 1;
     }
     m_pressed = newPressed;

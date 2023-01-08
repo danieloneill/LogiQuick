@@ -2,10 +2,12 @@
 #define LOGIVIEW_H
 
 #include <QDebug>
+#include <QEvent>
 #include <QEventLoop>
 #include <QFileDialog>
 
 #include <QImage>
+#include <QKeyEvent>
 #include <QMutex>
 #include <QObject>
 #include <QThread>
@@ -25,9 +27,14 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QQuickRenderControl>
-#include <QEvent>
 
 #include "g19device.hpp"
+
+#ifdef POST_GLOBALLY
+namespace XINPUT {
+# include <X11/Xlib.h>
+}
+#endif
 
 class QSettings;
 class LogiView : public QObject
@@ -42,6 +49,11 @@ class LogiView : public QObject
     G19Device m_g19device;
     QSettings *m_settings;
 
+#ifdef POST_GLOBALLY
+    XINPUT::Display *m_display;
+    void postGlobalKeyEvent(bool press, int keycode, int modifiers);
+#endif
+
 public:
     explicit LogiView(const QSize size, const double fpsLimit, QObject *parent = nullptr);
     ~LogiView();
@@ -50,11 +62,11 @@ public:
 
     void start();
 
-    typedef enum {
+    enum RStatus {
         NotRunning,
         Running
-    } Status;
-    Q_ENUM(Status)
+    };
+    Q_ENUM(RStatus)
 
     QSettings *settings() { return m_settings; }
 
@@ -65,6 +77,10 @@ public slots:
     void showLoadDialogue();
     void load(const QString &path);
     void setDisplayBrightness(int brightness);
+#ifdef POST_GLOBALLY
+    void globalKeyPressed(int keyIndex, Qt::KeyboardModifiers modifiers=Qt::NoModifier);
+    void globalKeyReleased(int keyIndex, Qt::KeyboardModifiers modifiers=Qt::NoModifier);
+#endif
     void postKeyPressed(Qt::Key key, Qt::KeyboardModifiers modifiers=Qt::NoModifier);
     void postKeyReleased(Qt::Key key, Qt::KeyboardModifiers modifiers=Qt::NoModifier);
 
@@ -96,7 +112,7 @@ private:
 
     QFileDialog *m_openDialogue;
 
-    Status m_status;
+    enum RStatus m_status;
 
     double m_fps;
     quint64 m_currentFrame;

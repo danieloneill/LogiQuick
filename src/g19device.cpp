@@ -104,7 +104,6 @@ extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer) {
         keys |= G19_KEY_LIGHT;
 
       cthis->gKeyCallback(keys);
-
   }
   else {
     cthis->gKeyCallback(0);
